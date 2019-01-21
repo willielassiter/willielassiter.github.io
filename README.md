@@ -1,3 +1,0 @@
-# willielassiter.github.io
-
-why not...

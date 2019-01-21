@@ -1,9 +1,198 @@
+<!DOCTYPE>
+
 <html>
   <head>
-    <title>CNIT 133</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0">
+  
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  
+    <script src="http://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <style>
+  
+      .wrapper {
+        background: white;
+        border: 2px solid #999;
+        box-sizing: border-box;
+        position: absolute;
+      }
+
+      .board {
+        width: 320;
+        height: 320;
+        position: relative;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      .tile {
+        display: inline-block;;
+        background: white;
+        margin: 4px;         
+        width: 75px;
+        height: 75px;         
+        border: 2px solid #999;
+        position: absolute;
+        font-size: 40px;
+      	text-align: center;
+        padding-top: 5px;
+      	-webkit-transition: 0.15s left, 0.15s top;
+ 	      transition: 0.15s left, 0.15s top;
+        box-sizing: border-box;
+      }
+
+      .even {
+        background: #ddd;
+      }
+
+      button { width: 78px; }
+      .wide-button { width: 160px; }
+
+      textarea { 
+        border-style: none; 
+        border-color: Transparent; 
+        overflow: auto
+      }
+      
+      .move  {
+        border: 1px solid #aaa;
+        margin-left: 2px; 
+        margin-bottom: 2px; 
+        padding-left: 3px;
+        font-size: 18px;
+        float: left;
+        width: 30px;
+      }
+
+      .move-current {
+        color: white;
+        background: #444;
+      }
+      
+      .move:hover {
+        cursor: pointer;
+        background-color: yellow;
+      }
+
+      .move-current:hover {
+        cursor: pointer;
+        background-color: yellow;
+        color: black;
+      }
+
+#solution {
+  word-break:break-all;
+
+}
+
+      .voffset  { margin-top: 2px; }
+      .voffset1 { margin-top: 5px; }
+      .voffset2 { margin-top: 10px; }
+      .voffset3 { margin-top: 15px; }
+      .voffset4 { margin-top: 30px; }
+      .voffset5 { margin-top: 40px; }
+      .voffset6 { margin-top: 60px; }
+      .voffset7 { margin-top: 80px; }
+      .voffset8 { margin-top: 100px; }
+      .voffset9 { margin-top: 150px; }
+
+       @media print {
+
+        .nonprinting {
+          display: none;
+        }
+      }
+
+    </style>
   </head>
+
   <body>
-    <h1>Willie Lassiter</h1>
-    <h2>CNIT 133</h2>
+    <div class="container">
+      <div class="col-lg-3">
+      </div>
+      <div class="col-lg-4">
+      <div id="gameboard">
+        <div><h3 id="title">15 Puzzle</h3></div>
+      </div>
+        <div id = "puzzle" class="board">
+          <div id="row0">
+            <div id= "_1" class="tile">1</div>
+            <div id= "_2" class="tile even">2</div>
+            <div id= "_3" class="tile">3</div>
+            <div id= "_4" class="tile even">4</div>
+          </div>
+
+          <div id="row1">
+            <div id= "_5" class="tile even">5</div>
+            <div id= "_6" class="tile">6</div>
+            <div id= "_7" class="tile even">7</div>
+            <div id= "_8" class="tile">8</div>
+          </div>
+          
+          <div id="row2">
+            <div id= "_9" class="tile">9</div>
+            <div id="_10" class="tile even">10</div>
+            <div id="_11" class="tile">11</div>
+            <div id="_12" class="tile even">12</div>
+          </div>
+          
+          <div id="row3">
+            <div id="_13" class="tile even">13</div>
+            <div id="_14" class="tile">14</div>
+            <div id="_15" class="tile even">15</div>
+          </div>
+        </div>
+    
+        <div class="nonprinting">
+          <div class="voffset" style="border-bottom:solid #ddd thin; padding:0 10px">
+            <span id="playerSolutionIndex">Current Move:</span>
+            <span id="playerSolutionLength">Total Moves:</span>
+          </div>
+          
+          <div class="voffset2" style="padding:0 10px">
+            <div>
+              <button id="solvePauseResume" class="btn btn-success btn-xs wide-button">Solve</button>
+              <button id="shuffle" class="btn btn-success btn-xs wide-button">Shuffle</button>
+            </div>
+            
+            <div class="voffset1">
+              <button id="prev" class="btn btn-primary btn-xs">Prev</button>
+              <button id="next" class="btn btn-primary btn-xs">Next</button>
+              <button id="undo" class="btn btn-primary btn-xs">Undo</button>
+              <button id="redo" class="btn btn-primary btn-xs">Redo</button>
+            </div>
+            
+            <div class="voffset1">
+              <button id="reset" class="btn btn-danger btn-xs wide-button">Reset</button>
+              <button id="restart" class="btn btn-xs btn-warning wide-button">Restart</button>
+            </div>
+
+            <div class="voffset1">
+              <button id="load" class="btn btn-info btn-xs nonprinting">Load</button>
+              <input id="position" size="32"></input>
+            </div>    
+          </div>
+        </div>
+      </div>      
+
+      <div class="col-lg-4">
+        <h3>Solution:</h3>
+        <div class="voffset1" style="padding-bottom: 10px; border: none">
+          <div id="solution" width="300px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <script src="15-puzzle.js"></script>
+    <script src="15-puzzle-app.js"></script>
   </body>
 </html>
+
